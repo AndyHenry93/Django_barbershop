@@ -12,11 +12,12 @@
         </ul>
         <span class="navbar-text">
           {% if user.is_authenticated %}
-              <a href="#">My Profile</a> 
-              <a href="#">Sign Out</a>
+              <h4>Welcome {{request.user.first_name}}</h4>
+              <a href="{% url 'shop:profile' request.user.id%}">My Profile</a> 
+              <a href="{% url 'shop:signout' %}">Sign Out</a>
           {% else %}
-              <a href="#">Sign In</a>
-              <a href="#">Register</a>
+              <a href="{% url 'shop:signin' %}">Sign In</a>
+              <a href="{% url 'shop:register' %}">Register</a>
           {% endif %}
         </span>
       </div>

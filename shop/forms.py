@@ -8,7 +8,9 @@ class UserRegisterForm(forms.ModelForm):
     username = forms.CharField(max_length=100)
     password = forms.CharField(max_length=20, required=True, widget=forms.PasswordInput)
     password2 = forms.CharField(max_length=20, required=True, widget=forms.PasswordInput, label="Confirm Password")
-    birthdate = forms.DateField(input_formats='%m/%d/%Y')
+    birthdate = forms.DateField(input_formats='%m/%d/%Y',label="Date of birth ('mm/dd/yyyy)")
+    is_barber = forms.BooleanField(required=True,label="Are you a barber?")
+
 
     class Meta:
         model = User

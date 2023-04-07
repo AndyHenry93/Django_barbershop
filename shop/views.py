@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from . forms import UserRegisterForm, SignInForm
+from . models import Profile
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse
@@ -25,7 +26,7 @@ def register(request):
             messages.success(request, "You're profile was sucessfully created")
             return redirect("shop:homepage")
     else:
-        user_from = UserRegisterForm()
+        user_form = UserRegisterForm()
         return render(request, 'shop/register.html',{'user_form':user_form})
     
 
@@ -40,11 +41,12 @@ def signin(request):
             user = authenticate(request,username=cd['username'],password=cd['password'])
             if user is not None:
                 login(request,user)
+                return redirect("shop:homepage")
             else:
                 messages.error(request,"Please check your credentials,either the username or password is incorrect ")
                 return HttpResponse("Invalid username or password")
     else:
-        user_signin(SignInForm)
+        user_signin = SignInForm()
         return render(request,'shop/signin.html',{'user_signin':user_signin})
 
 """
@@ -55,3 +57,10 @@ def signout(request):
     messages.success(request,"You've been sucessfully signout")
     return redirect("shop:signin")
 
+
+"""
+comment Profile
+"""
+def profile_page(request,id):
+    user_profile = get_object_or_404(Profile, id=id)
+    return render(request,"shop/profile.html",{"user_profile":user_profile})
