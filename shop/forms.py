@@ -1,9 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
+from . models import Profile
 
-"""
-comments for register
-"""
+
 class UserRegisterForm(forms.ModelForm):
     username = forms.CharField(max_length=100)
     password = forms.CharField(max_length=20, required=True, widget=forms.PasswordInput)
@@ -22,9 +21,24 @@ class UserRegisterForm(forms.ModelForm):
             raise forms.ValidationError("you're passwords didn't match, please double check your credentials")
         
 
-"""
-Comments for Sign in 
-"""
 class SignInForm(forms.Form):
     username = forms.CharField(max_length=100, required=True)
     password = forms.CharField(max_length=100, required=True, widget=forms.PasswordInput)
+
+class ProfileEditForm(forms.ModelForm):
+    avatar = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control-file'}))
+    bio = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = Profile
+        fields = ['avatar','bio']
+
+
+class UserEditForm(forms.ModelForm):
+     username = forms.CharField(max_length=100,required=True,widget=forms.TextInput(attrs={'class': 'form-control'}))
+     email = forms.EmailField(required=True,widget=forms.TextInput(attrs={'class': 'form-control'}))
+     
+     class Meta:
+        model = User
+        fields = ['username','email']
+

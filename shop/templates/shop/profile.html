@@ -3,5 +3,10 @@
 {% block title %}Profile{% endblock title %}Testing
 
 {% block content %}
-    <h1>Testing Profile</h1>
+    <div>
+        <img src="{{user_profile.avatar.url}}"  alt="profile image" height=200px width=200px>
+    </div>
+    <div>
+        <a class="btn btn-outline-info" href="{% url 'shop:edit' %}">Edit Profile</a>
+    </div>
 {% endblock content %}
