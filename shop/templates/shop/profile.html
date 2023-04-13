@@ -1,12 +1,30 @@
 {% extends 'base.html' %}
 
-{% block title %}Profile{% endblock title %}Testing
+{% block title %}Profile{% endblock title %}
 
 {% block content %}
     <div>
-        <img src="{{user_profile.avatar.url}}"  alt="profile image" height=200px width=200px>
-    </div>
-    <div>
-        <a class="btn btn-outline-info" href="{% url 'shop:edit' %}">Edit Profile</a>
+        <div class="card" style="width: 18rem;">
+            <img src="{{user_profile.avatar.url}}"  alt="profile image" height=280px width=280px>
+            <div class="card-body">
+              <h5 class="card-title"><strong>username: </strong>{{user_profile.user.username}}</h5>
+              {% if user_profile.is_barber %}
+                <p class="card-text"><strong>About Me: </strong>{{user_profile.bio}}</p>
+              {% endif %}
+            </div>
+                {% if user_profile.is_barber %}
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong> My Shop: </strong>{{user_profile.shop_name}}</li>
+                        <li class="list-group-item"><strong>Shop Address: </strong>{{user_profile.shop_address}}</li>
+                    </ul>
+                {% endif %}
+            <div class="card-body">
+              <a href="{% url 'shop:edit' %}" class="card-link">Edit Profile</a>
+              {% if user_profile.is_barber %}
+                <a href="#" class="card-link">Follow Me</a>
+                <a href="#" class="card-link">Message</a>
+              {% endif %}
+            </div>
+          </div>
     </div>
 {% endblock content %}

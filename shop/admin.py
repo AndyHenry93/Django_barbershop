@@ -7,5 +7,5 @@ admin.site.unregister(Group)
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user','avatar',)
+    list_display = ('id','user','avatar','is_barber',)
 

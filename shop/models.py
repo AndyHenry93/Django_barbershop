@@ -10,7 +10,12 @@ class Profile(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to="img/avatar/%Y/%m/%d", default="avatar.jpg")
     follows = models.ManyToManyField("self",related_name="followed_by",symmetrical=False,blank=True)
-    bio = models.CharField(max_length=500, default="Place Holder")
+    bio = models.CharField(max_length=500, blank=True, null=True)
+    shop_address = models.CharField(max_length=100, blank= True, null=True)
+    shop_name = models.CharField(max_length=100, blank=True, null=True)
+    client_photo = models.ImageField(upload_to="img/client/%Y/%m/%d", null=True)
+    is_barber = models.BooleanField(default=False, blank=True)
+
 
     def __str__(self):
         return self.user.username

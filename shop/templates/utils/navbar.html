@@ -15,7 +15,7 @@
         <span class="navbar-text">
           {% if user.is_authenticated %}
               <h4>Welcome {{request.user.first_name}}</h4>
-              <a href="{% url 'shop:profile' request.user.id%}">My Profile</a> 
+              <a href="{% url 'shop:profile' request.user.profile.id%}">My Profile</a> 
               <a href="{% url 'shop:signout' %}">Sign Out</a>
           {% else %}
               <a href="{% url 'shop:signin' %}">Sign In</a>

@@ -1,11 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from . forms import UserRegisterForm, SignInForm, ProfileEditForm, UserEditForm
+from . forms import UserRegisterForm, SignInForm, ProfileEditForm, UserEditForm, BarberEditForm
 from . models import Profile
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
+
+# login helper function
+def login_user(request, username, password):
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request,user)
+    else:
+        messages.error(request,"Please check your credentials,either the username or password is incorrect ")
+        return HttpResponse("Invalid username or password")
 
 # TODO: create the index function
 def index(request):
@@ -15,8 +24,8 @@ def index(request):
     # make updates later
     return render(request,"shop/index.html")
 
-
 # TODO: Create the Home view
+@login_required
 def home(request):
     """
       The function takes a request and return the render for the home page. 
@@ -42,16 +51,15 @@ def register(request):
             cd = user_form.cleaned_data
             new_user = user_form.save(commit=False)
             new_user.set_password(cd['password'])
-            new_user.set_username(cd['username'])
+            new_user.username = cd['username']
             new_user.save()
-            messages.success(request, "You're profile was sucessfully created")
-            return redirect("shop:signin")
+            # login the user
+            login_user(request,cd['username'],cd['password'])
+            messages.success(request, "You're profile was sucessfully created, Please upload your profile image")
+            return redirect("shop:edit")
     else:
         user_form = UserRegisterForm()
-        context = {
-            'user_form':user_form,
-        }
-        return render(request, 'shop/register.html',context)
+        return render(request, 'shop/register.html',{'user_form':user_form})
     
 # TODO: Create user login view
 def signin(request):
@@ -69,14 +77,8 @@ def signin(request):
         user_signin = SignInForm(request.POST)
         if user_signin.is_valid():
             cd = user_signin.cleaned_data
-            user = authenticate(request,username=cd['username'],password=cd['password'])
-            if user is not None:
-                login(request,user)
-                messages.success(request,'Sucessfully logged in')
-                return redirect("shop:homepage")
-            else:
-                messages.error(request,"Please check your credentials,either the username or password is incorrect ")
-                return HttpResponse("Invalid username or password")
+            login_user(request,cd['username'],cd['password'])
+            return redirect("shop:homepage")
     else:
         user_signin = SignInForm()
         return render(request,'shop/signin.html',{'user_signin':user_signin})
@@ -92,7 +94,6 @@ def signout(request):
     logout(request)
     messages.success(request,"You've been sucessfully signout")
     return redirect("shop:index")
-
 
 # TODO: Create user profile page
 def profile_page(request,id):
@@ -116,6 +117,8 @@ def account_edit(request):
         if user_edit.is_valid and profile_edit.is_valid:
             user_edit.save()
             profile_edit.save()
+            if request.user.profile.is_barber:
+                return redirect('shop:barber_edit')
             messages.success(request, "You're profile was sucessfully updated")
             return redirect('shop:homepage')
     else:
@@ -126,3 +129,15 @@ def account_edit(request):
             'profile_edit': profile_edit
         }
         return render(request,"shop/edit_account.html",context)
+    
+@login_required
+def barber_edit(request):
+    if request.method == 'POST':
+        barber_form = BarberEditForm(request.POST)
+        if barber_form.is_valid():
+            barber_form.save()
+            messages.success(request, "You're profile was sucessfully updated")
+        return redirect('shop:homepage')
+    else:
+        barber_form = BarberEditForm()
+        return render(request,"shop/barber_edit.html",{'barber_form':barber_form})
