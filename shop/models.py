@@ -24,6 +24,7 @@ class Profile(models.Model):
         return reverse("shop:profile", args=[self.profile.id])
 
 # signal function which creates a new profile object when users are created
+# TODO:
 @receiver(post_save,sender=User)
 def create_profile(sender,instance,created,**kwargs):
     if created:

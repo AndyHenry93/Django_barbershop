@@ -109,6 +109,7 @@ def profile_page(request,id):
     }
     return render(request,"shop/profile.html",context)
 
+# TODO:
 @login_required
 def account_edit(request):
     if request.method == 'POST':
@@ -129,7 +130,8 @@ def account_edit(request):
             'profile_edit': profile_edit
         }
         return render(request,"shop/edit_account.html",context)
-    
+
+# TODO: 
 @login_required
 def barber_edit(request):
     if request.method == 'POST':
