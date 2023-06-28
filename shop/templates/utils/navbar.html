@@ -1,27 +1,50 @@
-<nav class="navbar bg-dark navbar-expand-lg" data-bs-theme="dark"> 
-    <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'shop:index' %}">Fade Game</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          {% if user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{% url 'shop:homepage' %}">Home</a>
-          </li>
+<nav class="navbar navbar-expand-lg bg-dark border-bottom border-bottom-dark" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'shop:index' %}">Fade Game</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      {% comment %} Left Side {% endcomment %}
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          {% if request.user.is_authenticated %}
+               <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'shop:homepage' %}">Home</a>
+              </li> 
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'shop:profile' request.user.profile.id %}">Profile</a>
+              </li>
           {% endif %}
-        </ul>
-        <span class="navbar-text">
-          {% if user.is_authenticated %}
-              <h4>Welcome {{request.user.first_name}}</h4>
-              <a href="{% url 'shop:profile' request.user.profile.id%}">My Profile</a> 
-              <a href="{% url 'shop:signout' %}">Sign Out</a>
-          {% else %}
-              <a href="{% url 'shop:signin' %}">Sign In</a>
-              <a href="{% url 'shop:register' %}">Register</a>
+          {% if request.user.profile.is_barber%}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'shop:profile_list'%}">My Clients</a>
+            </li>
+          {% elif request.user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'shop:profile_list'%}">My Barbers</a>
+            </li>
           {% endif %}
-        </span>
-      </div>
+      </ul>
+
+      {% comment %} Right Side {% endcomment %}
+        {%if request.user.is_authenticated %}
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" type="search" placeholder="Find username" aria-label="Search">
+          <button class="btn btn-outline-primary" type="submit">Search</button>
+        </form>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end ms-2">
+          <button class="btn btn-outline-primary" type="button"><a href="{% url 'shop:signout' %}">Messages</a></button>
+        </div>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end ms-2">
+          <button class="btn btn-outline-primary" type="button"><a href="{% url 'shop:signout' %}">Log Out</a></button>
+        </div>
+      {% else %}
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <button class="btn btn-outline-primary" type="button"><a href="{% url 'shop:register' %}">Create Account</a></button>
+          <button class="btn btn-outline-primary" type="button"><a href="{% url 'shop:signin' %}">Log In</a></button>
+        </div>
+      {% endif %}
     </div>
-  </nav>
+  </div>
+</nav>

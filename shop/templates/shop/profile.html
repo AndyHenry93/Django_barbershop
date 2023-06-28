@@ -3,28 +3,87 @@
 {% block title %}Profile{% endblock title %}
 
 {% block content %}
-    <div>
-        <div class="card" style="width: 18rem;">
-            <img src="{{user_profile.avatar.url}}"  alt="profile image" height=280px width=280px>
-            <div class="card-body">
-              <h5 class="card-title"><strong>username: </strong>{{user_profile.user.username}}</h5>
-              {% if user_profile.is_barber %}
-                <p class="card-text"><strong>About Me: </strong>{{user_profile.bio}}</p>
-              {% endif %}
-            </div>
+
+    <div class="container text-center">
+      <div class="row">
+        <div class="col-8">
+          <div class="card" style="width: 18rem;">
+              <img src="{{user_profile.avatar.url}}"  alt="profile image" height=280px width=280px>
+              <div class="card-body">
+                <h5 class="card-title"><strong>username: </strong>{{user_profile.user.username}}</h5>
                 {% if user_profile.is_barber %}
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong> My Shop: </strong>{{user_profile.shop_name}}</li>
-                        <li class="list-group-item"><strong>Shop Address: </strong>{{user_profile.shop_address}}</li>
-                    </ul>
+                  <p class="card-text"><strong>About Me: </strong>{{user_profile.bio}}</p>
                 {% endif %}
-            <div class="card-body">
-              <a href="{% url 'shop:edit' %}" class="card-link">Edit Profile</a>
+              </div>
               {% if user_profile.is_barber %}
-                <a href="#" class="card-link">Follow Me</a>
-                <a href="#" class="card-link">Message</a>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong> My Shop: </strong>{{user_profile.shop_name}}</li>
+                    <li class="list-group-item"><strong>Shop Address: </strong>{{user_profile.shop_address}}</li>
+                  </ul>
               {% endif %}
+              <div class="card-body">
+                {% comment %} <a href="{% url 'shop:edit' %}" class="card-link">Edit Profile</a> {% endcomment %}
+                {% if user_profile.is_barber %}
+                  <a href="#" class="card-link">Follow Me</a>
+                  <a href="#" class="card-link">Message</a>
+                {% endif %}
+              </div>
+        </div>
+      </div>
+        <div class="col-4">
+          {% if user_profile.is_barber%}
+          {% comment %} Announment Card {% endcomment %}
+          <div class="card">
+            <div class="card-header">
+              <h3>{{user_profile.shop_name}}</h3>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title"><strong>Announments!</strong></h5>
+              <p class="card-text">Some Announment.</p>
             </div>
           </div>
+          <br>
+          {% comment %} Client Card {% endcomment %}
+          <div class="card">
+            <div class="card-header">
+              <h3>Transactions</h3>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title"><strong>Most Recent</strong></h5>
+              {% comment %} for loop: recent 5 {% endcomment %}
+              <p class="card-text">Total Number.</p>
+              <a href="#" class="btn btn-primary">All Transactions</a>
+            </div>
+          </div>
+          <br>
+          {% comment %} Client Card {% endcomment %}
+          <div class="card">
+            <div class="card-header">
+              <h3>My Appointments</h3>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title"><strong>Todays Date</strong></h5>
+              {% comment %} for loop: recent 5 {% endcomment %}
+              <p class="card-text">Total Appointment count</p>
+              <a href="#" class="btn btn-primary">All Appointments</a>
+            </div>
+          </div>
+        </div>
+
+        {% else %}
+        <div class="card">
+          <div class="card-header">
+            <h3>Local Shops</h3>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Special title treatment</h5>
+            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+        </div>
+      </div>
+        {% endif %}
+      </div>
+    </div> 
     </div>
 {% endblock content %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for follows in user_follows%}
+    <div class="container">
+        
+        <br><br>
+
+        <div class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <img src="{{follows.avatar.url}}" class="img-fluid rounded-start" alt="...">
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title">username: {{follows.user.username}}</h5>
+                  <p class="card-text">Profile: <a href="{% url 'shop:profile' follows.id %}">@{{follows.user.username|lower}}</a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+    {% endfor %}
+
+    
+{% endblock content %}

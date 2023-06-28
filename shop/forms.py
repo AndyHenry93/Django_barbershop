@@ -30,7 +30,7 @@ class UserEditForm(forms.ModelForm):
         fields = ['username','email']
 
 class ProfileEditForm(forms.ModelForm):
-    avatar = forms.ImageField(label="Profile Image",widget=forms.FileInput(attrs={'class': 'form-control-file'}))
+    avatar = forms.ImageField(label="Profile Image",widget=forms.FileInput(attrs={'class': 'form-control-file'}),required=False)
     is_barber = forms.BooleanField(label="Are you a barber?",required=False)
 
     class Meta:
@@ -41,7 +41,7 @@ class BarberEditForm(forms.ModelForm):
     bio = forms.CharField(max_length=500, required=True, label = "Bio", widget=forms.TextInput(attrs={'placeholder': 'Describe yourself...'}))
     shop_name = forms.CharField(max_length=100, required=True, label = "Shop Name")
     shop_address = forms.CharField(max_length=100, required=True, label = "Shop Address")
-    client_photo = forms.ImageField(label="Client photos",widget=forms.FileInput(attrs={'class': 'form-control-file'}))
+    client_photo = forms.ImageField(label="Client photos",required=False,widget=forms.FileInput(attrs={'class': 'form-control-file'}))
 
     class Meta:
         model = Profile

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from . forms import UserRegisterForm, SignInForm, ProfileEditForm, UserEditForm, BarberEditForm
+from . forms import UserRegisterForm, SignInForm, ProfileEditForm, BarberEditForm
 from . models import Profile
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
@@ -12,6 +12,7 @@ def login_user(request, username, password):
     user = authenticate(request, username=username, password=password)
     if user is not None:
         login(request,user)
+        messages.success(request,"Login Sucessful")
     else:
         messages.error(request,"Please check your credentials,either the username or password is incorrect ")
         return HttpResponse("Invalid username or password")
@@ -55,11 +56,21 @@ def register(request):
             new_user.save()
             # login the user
             login_user(request,cd['username'],cd['password'])
-            messages.success(request, "You're profile was sucessfully created, Please upload your profile image")
-            return redirect("shop:edit")
+            profile_form = ProfileEditForm(request.POST, request.FILES,instance=request.user.profile)
+            if profile_form.is_valid():
+                profile_form.save()
+                if request.user.profile.is_barber:
+                    return redirect('shop:barber_edit')
+            messages.success(request, "You're profile was sucessfully created")
+            return redirect("shop:homepage")
     else:
         user_form = UserRegisterForm()
-        return render(request, 'shop/register.html',{'user_form':user_form})
+        profile_form = ProfileEditForm()
+        context = {
+                "user_form":user_form,
+                "profile_form":profile_form
+            }
+        return render(request, 'shop/register.html',context)
     
 # TODO: Create user login view
 def signin(request):
@@ -96,6 +107,7 @@ def signout(request):
     return redirect("shop:index")
 
 # TODO: Create user profile page
+@login_required
 def profile_page(request,id):
     """
     Gets current users profile
@@ -109,29 +121,7 @@ def profile_page(request,id):
     }
     return render(request,"shop/profile.html",context)
 
-# TODO:
-@login_required
-def account_edit(request):
-    if request.method == 'POST':
-        user_edit = UserEditForm(request.POST, instance=request.user)
-        profile_edit = ProfileEditForm(request.POST, request.FILES, instance=request.user.profile)
-        if user_edit.is_valid and profile_edit.is_valid:
-            user_edit.save()
-            profile_edit.save()
-            if request.user.profile.is_barber:
-                return redirect('shop:barber_edit')
-            messages.success(request, "You're profile was sucessfully updated")
-            return redirect('shop:homepage')
-    else:
-        user_edit = UserEditForm(instance=request.user)
-        profile_edit = ProfileEditForm(instance=request.user.profile)
-        context = {
-            'user_edit':user_edit,
-            'profile_edit': profile_edit
-        }
-        return render(request,"shop/edit_account.html",context)
-
-# TODO: 
+# # TODO: 
 @login_required
 def barber_edit(request):
     if request.method == 'POST':
@@ -143,3 +133,15 @@ def barber_edit(request):
     else:
         barber_form = BarberEditForm()
         return render(request,"shop/barber_edit.html",{'barber_form':barber_form})
+    
+@login_required
+def profile_list(request):
+    """
+    Returns the list of all the users being followed by the current logged in user
+    """
+    user = get_object_or_404(Profile, user=request.user)
+    user_follows = user.follows.all()
+    context={
+        "user_follows":user_follows
+    }
+    return render(request,"shop/profile_list.html",context)
